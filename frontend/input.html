@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna - Votação</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Votação</h1>
+        <button class="votar" id="professor" data-numero="19">Votar na Professora 19</button>
+        <button class="votar" id="engenheiro" data-numero="26">Votar no Engenheiro 26</button>
+        <button class="votar" id="medica" data-numero="75">Votar na Médica 75</button>
+        <button class="votar" id="advogado" data-numero="89">Votar no Advogado 89</button>
+    </div>
+
+    <script>
+        const botoes_votar = document.querySelectorAll('.votar')
+
+        botoes_votar.forEach(botao => {
+            botao.addEventListener('click', (event) => {
+                const numeroSelecionado = parseInt(event.target.dataset.numero)
+
+                console.log(`Enviando voto para o número: ${numeroSelecionado}...`)
+
+                const dadosVotos = {
+                    numero_candidato: numeroSelecionado
+                }
+
+                fetch("http://127.0.0.1:8000/receber", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(dadosVotos)
+                })
+                    .then((resposta) => resposta.json())
+                    .then((dados) => {
+                        console.log("Resposta da API:", dados.mensagem)
+                        alert(`Voto confirmado para o número ${numeroSelecionado}`)
+                    })
+                    .catch((erro) => {
+                        console.error("Erro ao enviar voto:", erro)
+                        alert("Erro ao conectar a urna backend.")
+                    })
+            })
+        })
+    </script>
+</body>
+
+</html>
